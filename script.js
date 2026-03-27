@@ -12,7 +12,8 @@ async function sendMessage() {
     chatHistory.push({ role: "user", parts: [{ text: messageText }] });
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+        // Usando la versión estable v1 para que no falle
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -24,6 +25,12 @@ async function sendMessage() {
         });
 
         const data = await response.json();
+        
+        // Si hay un error en la respuesta de Google, esto lo atrapa
+        if (data.error) {
+            throw new Error(data.error.message);
+        }
+
         const aiResponse = data.candidates[0].content.parts[0].text;
 
         chatHistory.push({ role: "model", parts: [{ text: aiResponse }] });
@@ -31,7 +38,7 @@ async function sendMessage() {
 
     } catch (error) {
         addMessage("¡Ups! Alenzi se desconectó un momento. Revisa tu internet o la API Key.", 'received');
-        console.error(error);
+        console.error("Error detallado:", error);
     }
 }
 
