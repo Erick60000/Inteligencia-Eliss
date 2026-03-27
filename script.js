@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyDbBRJgky64sdoI-U3YrF-e_IcbX3y5rdo"; 
+const API_KEY = ""; 
 let chatHistory = []; 
 
 async function sendMessage() {
